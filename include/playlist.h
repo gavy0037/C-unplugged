@@ -12,17 +12,15 @@ typedef struct Playlistnode{
 } Playlistnode ;
 
 typedef struct Playlist{
+    char name[100];
     Playlistnode *curr ;
     int size ;
+    struct Playlist *next ;
 }Playlist ;
 
-typedef struct Playlist_list{
-    char name[100];
-    Playlist *playlist ;
-    struct Playlist_list *next ;
-}Playlist_list ;
 
-Playlist* create_playlist();
+Playlist* create_playlist(char *name);
+Playlist* find_playlist_by_name(Playlist *head , char *name);
 void add_song_to_playlist(Playlist *pl, Song *song);
 void remove_current_song(Playlist *pl);
 void play_current_song(Playlist *pl);
@@ -35,11 +33,9 @@ void print_playlist(Playlist *pl);
 // void save_playlist(const char *filename, Playlist *pl);
 // Playlist* load_playlist(const char *filename, Library *lib);
 
-void add_playlist(Playlist_list **head  , char *name);
-Playlist* find_playlist_by_name(Playlist_list *head , char *name);
-void remove_playlist(Playlist_list **head , char *name);
-void save_all_playlist(char *name , Playlist_list *head);
-Playlist_list* load_playlists(char *filename , Library *lib);
-void save_playlist(char *filename , Playlist_list *head);
+void add_playlist(Playlist **head  , Playlist *newpl );
+void remove_playlist_by_name(Playlist **head , char *name);
+Playlist* load_playlist(char *filename , Library *lib);
+void save_playlist(char *filename , Playlist *head);
 
 #endif

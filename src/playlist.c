@@ -4,11 +4,21 @@
 
 #include"../include/playlist.h"
 
-Playlist* create_playlist(){
+Playlist* create_playlist(char *name){
     Playlist *newplaylist = malloc(sizeof(Playlist));
-    newplaylist->curr = NULL; ;
+    newplaylist->curr = newplaylist->next = NULL ;
     newplaylist->size = 0 ;
+    strcpy(newplaylist->name , name);
     return newplaylist ;
+}
+
+Playlist* find_playlist_by_name(Playlist *head  , char *name){
+    Playlist *temp = head ;
+    while(temp != NULL){
+        if(strcmp(temp->name , name) == 0) return temp ;
+    }
+    printf("---PLAYLIST NOT FOUND\n");
+    return NULL ;
 }
 
 void add_song_to_playlist(Playlist* playlist , Song *song){//add song to the next of current song
@@ -98,5 +108,89 @@ void print_playlist(Playlist *pl){
     } while(st != temp) ;
 }
 
-//file storage name of playlist songID 1|2|3 ....
+void add_playlist(Playlist **head , Playlist *newpl){
+    Playlist *temp = (*head);
+    while(temp->next != NULL){
+        temp = temp->next ;
+    }
+    temp->next = newpl ;
+}
 
+void remove_playlist_by_name(Playlist **head , char *name){
+    Playlist *temp = (*head) , *prev ;
+    if(strcmp(temp->name , name) == 0){
+        prev = temp->next ;
+        (*head) = prev ;
+        free(temp);
+        return; 
+    }
+    while(temp != NULL){
+        if(strcmp(temp->name,name) == 0){
+            prev->next = temp->next ;
+            temp->next = NULL ;
+            free(temp);
+            printf("SUCCESFULLY DELETED\n");
+            return ;
+        }
+        prev = temp ;
+        temp = temp->next ;
+    }
+    printf("NOT FOUND\n");
+}
+
+// format of playlist.txt playlist name , Song ids 1|2|3|4
+
+Playlist *load_playlist(char *filename , Library *lib){
+    FILE *file ;
+    file = fopen(filename , "r");
+    if(file == NULL){
+        printf("FAILED TO OPEN PLAYLIST.txt\n");
+        return ;
+    }
+    char line[250];
+    Playlist *head = NULL ;
+    while(fgets(line , sizeof(line) , file) != NULL){
+        line[strcspn(line, "\n")] = 0;
+        char name[100] , songids[200];
+        sscanf(line , "%s,%s",name , songids);
+        Playlist *newpl = create_playlist(name);
+        char *token = strtok(songids , "|");
+        while(token != NULL){
+            int id = atoi(token);
+            Song *song = search_song_in_lib(lib , id);
+            if(song != NULL) add_song_to_playlist(newpl , song);
+            token = strtok(NULL , "|");
+        }
+        add_playlist(head , newpl);
+    }
+    fclose(file);
+
+    return head ;
+}   
+
+void save_playlist(char *filename , Playlist *head){
+    FILE *file ;
+    file = fopen(filename , "w");
+    if(file == NULL){
+        printf("FAILED TO OPEN PLAYLIST.txt\n");
+        return ;
+    }
+    while(head != NULL){
+        fprintf(file , "%s," , head->name);
+        Playlistnode *st , *temp ;
+        st = temp = head->curr ;
+        do{
+            int id = temp->song->id ;
+            fprintf(file , "%d" , id);
+            if(temp->next != st){
+                fprintf(file ,"|");
+            }
+            temp = temp->next;
+        }while(st != temp);
+        fprintf(file , "\n");
+        head = head->next ;
+    }
+    printf("ALL THE CURRENT PLAYLISTS HAVE BEEN SUCCESFULLY STORED\n");
+    fclose(file);
+
+}

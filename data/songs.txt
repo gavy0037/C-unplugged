@@ -2,6 +2,3 @@
 2,Blinding Lights,The Weeknd,3:20
 3,Counting Stars,OneRepublic,4:17
 4,Perfect,Ed Sheeran,4:23
-4,Perfect,Ed Sheeran,4:23
-4,Perfect,Ed Sheeran,4:23
-4,Perfect,Ed Sheeran,4:23
