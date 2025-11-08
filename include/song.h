@@ -8,7 +8,7 @@ typedef struct Song{
     int id ;
     char name[100];
     char A_name[100];
-    char duration[5];
+    char duration[6];
     struct Song *next ;
 }Song ;
 

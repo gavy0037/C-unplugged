@@ -10,6 +10,7 @@ Song *create_song(int id , char *name , char* A_name , char *duration){
     strcpy(newsong->name , name);
     strcpy(newsong->A_name , A_name);
     strcpy(newsong->duration , duration);
+    newsong->duration[5] = '\0';
     newsong->next = NULL ;
     return newsong;
 }

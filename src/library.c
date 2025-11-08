@@ -22,10 +22,12 @@ void free_library(Library **lib){
     (*lib) = NULL ;
 }
 
-Library* load_library(Library **lib , char *songfile , char *albumfile){
-    (*lib)->songs = load_song(songfile);
-    (*lib)->albums = load_albums(albumfile);
-    return *lib ;
+Library* load_library(char *songfile , char *albumfile){
+    Library *lib = create_library();
+
+    lib->songs = load_songs(songfile);
+    lib->albums = load_albums(albumfile ,lib);
+    return lib ;
 }
 
 void save_library(Library *lib , char *songsfile , char *albumsfile){
@@ -34,29 +36,30 @@ void save_library(Library *lib , char *songsfile , char *albumsfile){
 }
 
 void print_lib_song(Library *lib){
+    if(lib == NULL || lib->songs == NULL){
+        printf("\n---NO SONGS IN LIBRARY---\n");
+        return ;
+    }
     printf("\n--- SONGS IN LIBRARY ---\n");
     print_all_songs(lib->songs);
 }
 
 Song* search_song_in_lib(Library *lib , int id){
+    if(lib == NULL) return NULL ;
     return find_song_by_id(lib->songs , id);
 }
 
 void add_song_to_lib(Library **lib , Song *song){
+    if((*lib) == NULL || song == NULL) return ;
     add_song(&((*lib)->songs) , song);
 }
 
 void remove_song_from_lib(Library **lib , int id){
     Song *song = (*lib)->songs, *prev = NULL ;
-    if(song->id == id){
-        prev = song->next ;
-        free(song);
-        (*lib)->songs = prev ;
-        return ;
-    }
     while(song != NULL){
         if(song->id == id){
-            prev->next = song->next ;
+            if(prev != NULL) prev->next = song->next ;
+            else (*lib)->songs = song->next ;
             free(song);
             return ;
         }
@@ -67,6 +70,10 @@ void remove_song_from_lib(Library **lib , int id){
 }
 
 void list_all_albums(Library *lib){
+    if(lib == NULL || lib->albums == NULL){
+        printf("NO ALBUMS IN LIBRARY\n");
+        return ;
+    }
     printf("\n--- ALBUMS IN LIBRARY ---\n");
     Album *album = lib->albums ;
     while(album != NULL){
@@ -76,6 +83,7 @@ void list_all_albums(Library *lib){
 }
 
 Album* find_album_by_id(Library *lib , int id){
+    if(lib == NULL) return NULL ;
     Album *album = lib->albums;
     while(album != NULL){
         if(album->id == id) return album ;
@@ -87,27 +95,18 @@ Album* find_album_by_id(Library *lib , int id){
 }
 
 void add_album_to_library(Library *lib , Album *album){
-    Album *a = lib->albums ;
-    if(a == NULL){
-        lib->albums = album ;
-        return ;
-    }
-    
-    while(a->next != NULL) a = a->next ;
-    a->next = album ;
+    if(lib== NULL || album == NULL) return ;
+
+    add_album_to_list(&(lib->albums)  , album);
 }
 
 void remove_album_from_library(Library *lib , int id){
+    if(lib == NULL || lib->albums == NULL) return ;
     Album *curr = lib->albums , *prev = NULL ;
-    if(curr != NULL && curr->id == id){
-        prev = curr->next ;
-        free(curr);
-        lib->albums = prev ;
-        return ;
-    }
     while(curr != NULL){
         if(curr->id == id){
-            prev->next = curr->next ;
+            if(prev != NULL)prev->next = curr->next ;
+            else lib->albums = curr->next ;
             free(curr);
             return ;
         }

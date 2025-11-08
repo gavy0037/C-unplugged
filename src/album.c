@@ -9,39 +9,44 @@ Album* create_album(int id , char *name){
     Album *newalbum = (Album*)malloc(sizeof(Album));
     newalbum->id = id ;
     strcpy(newalbum->name,name) ;
-
+    newalbum->next = NULL ;
+    newalbum->songlist = NULL ;
     return newalbum ;
 }
 
 void add_song_to_album(Album** album , Song *song){
+    if((*album) == NULL){
+        return ;
+    }
     add_song(&((*album)->songlist) , song);
 }
 
 void add_album_to_list(Album **list , Album *newalbum){
     if((*list) == NULL){
-        list = newalbum;
+        (*list) = newalbum;
+        return ;
     }
     Album *temp = (*list);
     while(temp->next != NULL){
         temp = temp->next ;
     }
     temp->next = (newalbum);
-    return ;
 }
 
 void remove_song_from_album(Album** album , Song *song){
     Song* temp = (*album)->songlist , *prev = NULL ;
-    if(temp != NULL && temp->id == song->id){
-        prev = temp->next ;
-        free(temp);
-        (*album)->songlist = prev; 
-        return ;
-    }
+    // if(temp != NULL && temp->id == song->id){
+    //     prev = temp->next ;
+    //     free(temp);
+    //     (*album)->songlist = prev; 
+    //     return ;
+    // }
     while(temp != NULL){
         if(temp->id == song->id){
-            prev->next = temp->next ;
+            if(prev) prev->next = temp->next ;
+            else (*album)->songlist = temp->next ;
             free(temp);
-            return ;
+            return; 
         }
         prev = temp ;
         temp = temp->next ;
@@ -56,7 +61,7 @@ void print_album(Album* album){
 
 void free_all_albums(Album** list){
     if((*list) == NULL){
-        printf("***** Already empyty ****\n");
+        printf("***** Already empty ****\n");
         return ;
     }
     Album *temp = (*list);
@@ -66,14 +71,15 @@ void free_all_albums(Album** list){
         free(temp);
         temp = next ;
     }
+    (*list) = NULL ;
 }
 
 Album* load_albums(char *filename , Library *lib){//storage: id , name , id s of songs
     FILE *file ;
-    file = fopen("../data/albums.c","r");
+    file = fopen(filename,"r");
     if(file == NULL){
         printf("Could not find album file\n");
-        return ;
+        return NULL ;
     }
     Album *albumlist = NULL ;
     char line[100];
@@ -92,7 +98,7 @@ Album* load_albums(char *filename , Library *lib){//storage: id , name , id s of
             }
             token = strtok(NULL , "|");
         }
-        add_album_to_list(&albumlist , &temp);
+        add_album_to_list(&albumlist , temp);
     }
     fclose(file);
     return albumlist ;
@@ -106,14 +112,12 @@ void save_albums(char *filename , Album *list){
         return ;
     }
     Album *curr = list ;
-    while(list != NULL){
+    while(curr != NULL){
         fprintf(file,"%d,%s,",curr->id , curr->name);
         Song *song = curr->songlist ;
         while(song != NULL){
             fprintf(file , "%d" , song->id);
-            if(song->next != NULL){
-                fprintf(file , "|");
-            }
+            if(song->next != NULL) fprintf(file , "|");
             song = song->next ;
         }
         fprintf(file , "\n");

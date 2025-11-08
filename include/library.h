@@ -6,13 +6,14 @@
 
 typedef struct Library {
     Song *songs;
-    Album *albums;
+    
+    Album* albums ;
 }Library;
 
 Library* create_library();
 void free_library(Library **lib);
 
-void load_library(Library **lib, char *songfile, char *albumfile);
+void load_library(char *songfile, char *albumfile);
 void save_library(Library *lib, char *songsfile, char *albumsfile);
 
 void print_lib_song(Library *lib);

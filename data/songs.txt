@@ -1,4 +1,10 @@
-1,Shape of You,Ed Sheeran,3:53
-2,Blinding Lights,The Weeknd,3:20
-3,Counting Stars,OneRepublic,4:17
-4,Perfect,Ed Sheeran,4:23
+1,Blinding_Lights,The_Weeknd,3:20
+2,Levitating,Dua_Lipa,3:23
+3,Peaches,Justin_Bieber,3:18
+4,Stay,The_Kid_LAROI,2:21
+5,Shape_of_You,Ed_Sheeran,4:24
+6,Someone_Like_You,Adele,4:45
+7,Believer,Imagine_Dragons,3:25
+8,Thunder,Imagine_Dragons,3:07
+9,Counting_Stars,OneRepublic,4:16
+10,Photograph,Ed_Sheeran,4:18

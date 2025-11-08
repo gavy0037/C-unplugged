@@ -16,18 +16,18 @@ Playlist* find_playlist_by_name(Playlist *head  , char *name){
     Playlist *temp = head ;
     while(temp != NULL){
         if(strcmp(temp->name , name) == 0) return temp ;
+        temp = temp->next ;
     }
     printf("---PLAYLIST NOT FOUND\n");
     return NULL ;
 }
 
 void add_song_to_playlist(Playlist* playlist , Song *song){//add song to the next of current song
-    playlist->size++;
     Playlistnode* newpl = malloc(sizeof(Playlistnode));
     newpl->song = song ;
     if(playlist->curr == NULL){
-        playlist->curr = newpl ;
         newpl->next = newpl->prev = newpl ;
+        playlist->curr = newpl ;
     }else{
         Playlistnode* temp = playlist->curr->next ;
         playlist->curr->next = newpl ;
@@ -35,14 +35,20 @@ void add_song_to_playlist(Playlist* playlist , Song *song){//add song to the nex
         newpl->next = temp ;
         newpl->prev = playlist->curr ;
     }
+    playlist->size++;
     printf("---SONG ADDED SUCCESFULLY---\n");
 }
 
 void remove_current_song(Playlist *pl){
+    if(pl == NULL || pl->curr == NULL) return ;
+    Playlistnode *temp = pl->curr->next ;
     pl->curr->prev->next = pl->curr->next ;
     pl->curr->next->prev = pl->curr->prev ;
     pl->curr->next = pl->curr->prev = NULL ;
     free(pl->curr);
+    pl->curr = temp ;
+
+    pl->size--;
 }
 
 void play_current_song(Playlist *pl){
@@ -50,7 +56,7 @@ void play_current_song(Playlist *pl){
         printf("---PLAYLIST IS EMPTY---\n");
     }else{
         Song *song = pl->curr->song ;
-        printf("** PLAYING ** - ID: %d Name: %s Artist's Name: %s Duration: %s\n",
+        printf("** PLAYING ** - ID: %d Name: %s Artist's Name: %s Duration: [%s]\n",
             song->id , song->name , song->A_name , song->duration);
     }
 }
@@ -74,59 +80,62 @@ void play_prev_song(Playlist* pl){
 }
 
 void add_album_to_playlist(Playlist *pl , Album *album){
+    if(pl == NULL || album == NULL) return ;
     Song *song = album->songlist ;
-    int count = 0 ;
     while(song != NULL){
         add_song_to_playlist(pl , song);
         song = song->next ;
-        count++;
     }
-    pl->size+=count ;
 }
 
 void clear_playlist(Playlist *pl){
     if(pl->curr == NULL) return ;
-    Playlistnode *st = pl->curr  , *temp = pl->curr ;
-    do{
-        Playlistnode *next = temp->next ;
+    Playlistnode *st = pl->curr  , *temp = pl->curr->next ;
+    while (temp != st) {
+        Playlistnode *next = temp->next;
         free(temp);
-        temp = next ;
-    }while(st != temp);
-
-    pl->size = 0 ;
-
+        temp = next;
+    }
+    free(st);
+    pl->curr = NULL;
+    pl->size = 0;
 }
 
 void print_playlist(Playlist *pl){
+    if(pl->curr == NULL){
+        printf("PLAYLIST IS EMPTY\n");
+        return ;
+    }
     printf("\n---PLAYLIST---\n");
     Playlistnode *st = pl->curr  , *temp = pl->curr ;
     do{
-        printf("Song id: %d Song's name: %s\n" , 
-            temp->song->id , temp->song->name);
+        printf("-> %s " ,temp->song->name);
         temp = temp->next ;
-
     } while(st != temp) ;
 }
 
 void add_playlist(Playlist **head , Playlist *newpl){
-    Playlist *temp = (*head);
-    while(temp->next != NULL){
-        temp = temp->next ;
+    if(newpl == NULL) return ;
+    newpl->next = NULL ;
+    if((*head) == NULL){
+        *head = newpl ;
+        return ;
     }
+
+    Playlist *temp = (*head);
+    while(temp->next != NULL) temp = temp->next ;
     temp->next = newpl ;
 }
 
 void remove_playlist_by_name(Playlist **head , char *name){
+    if(head == NULL || *head == NULL) return ;
+
     Playlist *temp = (*head) , *prev ;
-    if(strcmp(temp->name , name) == 0){
-        prev = temp->next ;
-        (*head) = prev ;
-        free(temp);
-        return; 
-    }
+    
     while(temp != NULL){
         if(strcmp(temp->name,name) == 0){
-            prev->next = temp->next ;
+            if(prev == NULL )prev->next = temp->next ;
+            else *head = temp->next ;
             temp->next = NULL ;
             free(temp);
             printf("SUCCESFULLY DELETED\n");
@@ -161,7 +170,7 @@ Playlist *load_playlist(char *filename , Library *lib){
             if(song != NULL) add_song_to_playlist(newpl , song);
             token = strtok(NULL , "|");
         }
-        add_playlist(head , newpl);
+        add_playlist(&head , newpl);
     }
     fclose(file);
 
@@ -179,14 +188,17 @@ void save_playlist(char *filename , Playlist *head){
         fprintf(file , "%s," , head->name);
         Playlistnode *st , *temp ;
         st = temp = head->curr ;
-        do{
-            int id = temp->song->id ;
-            fprintf(file , "%d" , id);
-            if(temp->next != st){
-                fprintf(file ,"|");
-            }
-            temp = temp->next;
-        }while(st != temp);
+        if(st != NULL){
+            do{
+                int id = temp->song->id ;
+                fprintf(file , "%d" , id);
+                if(temp->next != st){
+                    fprintf(file ,"|");
+                }
+                temp = temp->next;
+            }while(st != temp);
+        }
+        
         fprintf(file , "\n");
         head = head->next ;
     }

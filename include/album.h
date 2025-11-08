@@ -2,6 +2,7 @@
 #define ALBUM_H
 
 #include"song.h"
+#include"library.h"
 
 typedef struct Album{
     int id ;
