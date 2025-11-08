@@ -1,66 +1,54 @@
-# ============================
-# 🎵  Makefile for C-Unplugged
-# ============================
-
-# Compiler and flags
-CC       := gcc
-CFLAGS   := -Wall -Wextra -std=c11 -g -Iinclude
+# Compiler settings
+CC = gcc
+CFLAGS = -Wall -Wextra -I./include
 
 # Directories
-SRC_DIR  := src
-OBJ_DIR  := build
-BIN_DIR  := bin
+SRC_DIR = src
+BUILD_DIR = build
+BIN_DIR = bin
+INCLUDE_DIR = include
 
-# Target executable name
-TARGET   := $(BIN_DIR)/c_unplugged
+# Source and object files
+SRCS = $(wildcard $(SRC_DIR)/*.c)
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
-# Find all source files
-SRC_FILES := $(wildcard $(SRC_DIR)/*.c)
-OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
+# Output executable
+TARGET = $(BIN_DIR)/music-player
 
 # Default target
-all: dirs $(TARGET)
+all: directories $(TARGET)
 
-# Create required directories
-dirs:
-	@mkdir -p $(OBJ_DIR) $(BIN_DIR)
+# Create necessary directories
+directories:
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BIN_DIR)
 
-# Link all object files into final executable
-$(TARGET): $(OBJ_FILES)
-	@echo "🔗 Linking..."
-	$(CC) $(OBJ_FILES) -o $(TARGET)
-	@echo "✅ Build successful! Executable: $(TARGET)"
+# Link object files to create executable
+$(TARGET): $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET)
 
-# Compile each .c file into a .o file
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@echo "🧩 Compiling $<..."
+# Compile source files into object files
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean build files
+clean:
+	@rm -rf $(BUILD_DIR)/* $(BIN_DIR)/*
+
+# Clean and rebuild
+rebuild: clean all
 
 # Run the program
 run: all
-	@echo "🚀 Running C-Unplugged..."
-	@$(TARGET)
+	./$(TARGET)
 
-# Debug build with additional flags
-debug:
-	$(MAKE) CFLAGS="$(CFLAGS) -DDEBUG -O0 -fsanitize=address" clean all
-
-# Clean build and binary files
-clean:
-	@echo "🧹 Cleaning build files..."
-	@rm -rf $(OBJ_DIR) $(BIN_DIR)
-	@echo "✅ Clean complete."
-
-# Help menu
+# Show help
 help:
-	@echo "=============================="
-	@echo "🎵 C-Unplugged Build Commands"
-	@echo "=============================="
-	@echo "make            -> Build project"
-	@echo "make run        -> Build & run executable"
-	@echo "make debug      -> Build with sanitizer flags"
-	@echo "make clean      -> Remove all build outputs"
-	@echo "make help       -> Show this help menu"
-	@echo "=============================="
+	@echo "Available targets:"
+	@echo "  all      - Build the project (default)"
+	@echo "  clean    - Remove build files"
+	@echo "  rebuild  - Clean and rebuild"
+	@echo "  run      - Build and run the program"
+	@echo "  help     - Show this help message"
 
-.PHONY: all clean run debug help dirs
+.PHONY: all directories clean rebuild run help

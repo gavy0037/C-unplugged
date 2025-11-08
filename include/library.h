@@ -4,8 +4,6 @@
 #include "song.h"
 #include "album.h"
 
-struct Album ;
-
 typedef struct Library {
     Song *songs;
     
@@ -15,7 +13,7 @@ typedef struct Library {
 Library* create_library();
 void free_library(Library **lib);
 
-void load_library(char *songfile, char *albumfile);
+Library* load_library(char *songfile, char *albumfile);
 void save_library(Library *lib, char *songsfile, char *albumsfile);
 
 void print_lib_song(Library *lib);

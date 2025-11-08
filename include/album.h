@@ -2,7 +2,7 @@
 #define ALBUM_H
 
 #include"song.h"
-#include"library.h"
+struct Library;
 
 typedef struct Album{
     int id ;
@@ -19,7 +19,7 @@ void print_album(Album* album);
 void free_all_albums(Album **list);
 void add_album_to_list(Album **list , Album *newalbum);
 
-Album* load_albums(char *filename , Library *lib);
+Album* load_albums(char *filename , struct Library *lib);
 void save_albums(char *filename, Album *list);
 
 #endif
