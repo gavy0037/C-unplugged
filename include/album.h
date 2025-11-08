@@ -18,7 +18,7 @@ void print_album(Album* album);
 void free_all_albums(Album **list);
 void add_album_to_list(Album **list , Album *newalbum);
 
-Album* load_albums(char *filename);
-Album* save_albums(char *filename, Album *list);
+Album* load_albums(char *filename , Library *lib);
+void save_albums(char *filename, Album *list);
 
 #endif
