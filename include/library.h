@@ -4,6 +4,8 @@
 #include "song.h"
 #include "album.h"
 
+struct Album ;
+
 typedef struct Library {
     Song *songs;
     
