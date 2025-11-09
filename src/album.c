@@ -55,7 +55,7 @@ void remove_song_from_album(Album** album , Song *song){
 }
 
 void print_album(Album* album){
-    printf("ID: %d\tAlbum: %s\n",album->id , album->name);
+    printf(" ---- ID: %d\tAlbum: %s ----\n",album->id , album->name);
     print_all_songs(album->songlist);
 }
 

@@ -6,9 +6,11 @@
 
 Playlist* create_playlist(char *name){
     Playlist *newplaylist = malloc(sizeof(Playlist));
-    newplaylist->curr = newplaylist->next = NULL ;
-    newplaylist->size = 0 ;
-    strcpy(newplaylist->name , name);
+    if (newplaylist == NULL) return NULL;
+    newplaylist->curr = NULL;
+    newplaylist->next = NULL;
+    newplaylist->size = 0;
+    strcpy(newplaylist->name, name);
     return newplaylist ;
 }
 
@@ -155,7 +157,7 @@ Playlist *load_playlists(char *filename , Library *lib){
     file = fopen(filename , "r");
     if(file == NULL){
         printf("FAILED TO OPEN PLAYLIST.txt\n");
-        return ;
+        return NULL ;
     }
     char line[250];
     Playlist *head = NULL ;
