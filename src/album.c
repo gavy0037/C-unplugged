@@ -123,6 +123,5 @@ void save_albums(char *filename , Album *list){
         fprintf(file , "\n");
         curr = curr->next ;
     }
-    printf("All data saved to txt file\n");
     fclose(file);
 }
