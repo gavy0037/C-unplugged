@@ -30,7 +30,10 @@ int main() {
     }
 
     playlists = load_playlists(PLAYLISTS_FILE, lib);
-
+    if(playlists == NULL){
+        printf("WARNING : PLAYLIST's LOADING FAILED\n");
+    }
+    print_playlist(playlists);
     int choice;
     char name[100];
 
@@ -52,7 +55,7 @@ int main() {
         printf("======================\n");
         printf("Enter choice: ");
         scanf("%d", &choice);
-
+        getchar();
         switch (choice) {
             case 1:
                 print_all_songs(lib->songs);
