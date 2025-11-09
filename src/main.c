@@ -342,7 +342,7 @@ int main() {
                     free_playlist(&prev);
                     prev = next ;
                 }
-                printf("All data saved. Goodbye!\n");
+                printf("----------- THANK YOU FOR USING MY APP -----------\n");
                 logger("save_and_exit\n");
                 return 0 ;
             default:
@@ -350,4 +350,5 @@ int main() {
         }
     }
     return 0;
+
 }
