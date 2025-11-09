@@ -205,7 +205,8 @@ void save_playlist(char *filename , Playlist *head){
         fprintf(file , "\n");
         head = head->next ;
     }
-    printf("ALL THE CURRENT PLAYLISTS HAVE BEEN SUCCESFULLY STORED\n");
+    printf("PLALISTS HAVE BEEN SAVED\n");
     fclose(file);
+
 
 }
