@@ -59,7 +59,7 @@ void play_current_song(Playlist *pl){
         printf("---PLAYLIST IS EMPTY---\n");
     }else{
         Song *song = pl->curr->song ;
-        printf("\n** PLAYING ** - ID: %d Name: %s Artist's Name: %s Duration: [%s]\n",
+        printf("\n ** PLAYING ** - ID: %d Name: %s | Artist's Name: %s | Duration: [%s] \n",
             song->id , song->name , song->A_name , song->duration);
     }
 }
@@ -89,19 +89,20 @@ void add_album_to_playlist(Playlist *pl , Album *album){
     }
 }
 
-void clear_playlist(Playlist *pl){
-    if(pl->curr == NULL) return ;
-    Playlistnode *st = pl->curr  , *temp = pl->curr->next ;
-    while (temp != st) {
-        Playlistnode *next = temp->next;
-        free(temp);
-        temp = next;
+void free_playlist(Playlist **pl){
+    if((*pl)->curr == NULL) return ;
+    if((*pl)->curr != NULL){
+        Playlistnode *st = (*pl)->curr  , *temp = (*pl)->curr->next ;
+        while (temp != st) {
+            Playlistnode *next = temp->next;
+            free(temp);
+            temp = next;
+        }
+        free(st);
     }
-    free(st);
-    pl->curr = NULL;
-    pl->size = 0;
+    free(*pl);
+    *pl = NULL ;   
 }
-
 void print_playlist(Playlist *pl){
     if(pl->curr == NULL){
         printf("PLAYLIST IS EMPTY\n");
@@ -130,16 +131,16 @@ void add_playlist(Playlist **head , Playlist *newpl){
 }
 
 void remove_playlist_by_name(Playlist **head , char *name){
-    if(head == NULL || *head == NULL) return ;
+    if(*head == NULL) return ;
 
-    Playlist *temp = (*head) , *prev ;
+    Playlist *temp = (*head) , *prev = NULL ;
     
     while(temp != NULL){
         if(strcmp(temp->name,name) == 0){
-            if(prev == NULL )prev->next = temp->next ;
+            if(prev != NULL ) prev->next = temp->next ;
             else *head = temp->next ;
             temp->next = NULL ;
-            free(temp);
+            free_playlist(&temp);
             printf("SUCCESFULLY DELETED\n");
             return ;
         }

@@ -27,7 +27,7 @@ void play_current_song(Playlist *pl);
 void play_next_song(Playlist *pl);
 void play_prev_song(Playlist *pl);
 void add_album_to_playlist(Playlist *pl, Album *album); // adds all album songs in album order to playlist
-void clear_playlist(Playlist *pl);
+void free_playlist(Playlist **pl);
 void print_playlist(Playlist *pl);
 
 // void save_playlist(const char *filename, Playlist *pl);

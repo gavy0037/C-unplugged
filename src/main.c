@@ -12,10 +12,10 @@
 #define LOG_FILE "data/commands.log"
 
 
-void log_command(const char *command) {
+void logger(char *cmd) {
     FILE *log = fopen(LOG_FILE, "a");
     if (!log) return;
-    fprintf(log, "%s\n", command);
+    fprintf(log, "%s\n", cmd) ;
     fclose(log);
 }
 
@@ -36,7 +36,7 @@ int main() {
     playlists = load_playlists(PLAYLISTS_FILE, lib);
     int option ;
     char name[100];//used to take the inputs of newly added things ;
-
+    Playlist *temp ;
     while (1) {
 
         printf("\n-----------------------------------\n");
@@ -52,10 +52,11 @@ int main() {
         printf("7. Add song to playlist\n");
         printf("8. Add album to playlist\n");
         printf("9. Remove song from Album\n");
-        printf("10. Play Songs through playlists\n");//FIRST LIST ALL THE PLAYLISTS AND THEN PROMPT THE USER TO SELECT PLAYLIST add features in this about play next prev or delete this current song or add song in this playlist
-        
-        //add sub features like after creating a album then if you want to add song to this album or playlist
-        printf("11. Exit App\n");
+        printf("10. Play Songs through playlists\n");
+        printf("11. Remove a Playlist\n");
+        //add the feature to delete a playlist
+       
+        printf("12. Exit App\n");
         printf("======================\n");
         printf("Enter choice: ");
         scanf("%d", &option);
@@ -64,21 +65,22 @@ int main() {
         switch(option){
             case 1:
                 {print_all_songs(lib->songs);
-                log_command("View_songs");
+                logger("View_songs");
                 break;}
 
             case 2:
                 {list_all_albums(lib);
-                log_command("View_albums");
+                logger("View_albums");
                 break;}
 
             case 3:
-                {Playlist *temp = playlists;
-                while (temp) {
+                {
+                temp = playlists ;
+                while (temp != NULL) {
                     print_playlist(temp);
                     temp = temp->next;
                 }
-                log_command("View_playlists");
+                logger("View_playlists");
                 break;}
             case 4:
                 {printf("Enter new album name: ");
@@ -87,7 +89,7 @@ int main() {
                 name[strcspn(name, "\n")] = 0;
                 Album* album = create_album( ++albumid , name);
                 add_album_to_library(lib, album);
-                log_command("Created_new_Album");
+                logger("Created_new_Album");
                 while(1){
                     char ch  ;
                     printf("Do you wish to add song to this album [y/n] : ");
@@ -107,7 +109,7 @@ int main() {
                         }
                         Song *copy = create_song(song->id, song->name, song->A_name, song->duration);
                         add_song_to_album(&album, copy);
-                        log_command("Add_song_to_album");
+                        logger("Add_song_to_album");
                     }else{
                         printf("Looks like you do not want to add a song to this album\n");
                         break ;
@@ -139,7 +141,7 @@ int main() {
                     Song *copy = create_song(song->id, song->name, song->A_name, song->duration);
                     add_song_to_album(&alb, copy);
                     printf("SONG ADDED SUCCESFULLY\n");
-                    log_command("Add_song_to_album");
+                    logger("Add_song_to_album");
                     printf("Do you wish to add another song to this album [y/n]: ");
                     char ch ;
                     scanf("%c",&ch);
@@ -159,7 +161,7 @@ int main() {
                     break;
                 }
                 add_playlist(&playlists, newpl);
-                log_command("Create_playlist");
+                logger("Create_playlist");
                 while(1){
                     printf("Do you wish to add song to this Playlist [y/n]: ");
                     char ch;
@@ -177,7 +179,7 @@ int main() {
                             break;
                         }
                         add_song_to_playlist(newpl, song);
-                        log_command("Add_song_to_playlist");
+                        logger("Add_song_to_playlist");
                         printf("SONG ADDED SUCCESFULLy\n");
                     }else if(ch == 'n') break;
                     else{
@@ -209,7 +211,7 @@ int main() {
                         break;
                     }
                     add_song_to_playlist(pl, sng);
-                    log_command("add_song_to_playlist");
+                    logger("add_song_to_playlist");
                     printf("SONG ADDED SUCCESFULLY\n");
                     printf("Do you wish to add another song to this playlist [y/n]: ");
                     char ch ;
@@ -227,11 +229,12 @@ int main() {
                     printf("No playlists available\n");
                     break;
                 }
-                Playlist *temp = playlists;
-                while (temp) {
+                temp = playlists ;
+                while (temp != NULL) {
                     print_playlist(temp);
                     temp = temp->next;
                 }
+
                 printf("Enter playlist name to add album to: ");
                 scanf("%s",name);
                 getchar();
@@ -252,7 +255,7 @@ int main() {
                     break;
                 }
                 add_album_to_playlist(pl, alb);
-                log_command("Add_album_to_playlist");
+                logger("Add_album_to_playlist");
                 break;}
             case 9:
                 {int aid, sid;
@@ -275,15 +278,15 @@ int main() {
                     break;
                 }
                 remove_song_from_album(&alb, song);
-                log_command("delete_song_from_album");
+                logger("delete_song_from_album");
                 break;}
             case 10:
                 if (playlists == NULL) {
                     printf("No playlists available.\n");
                     break;
                 }
-                Playlist *temp = playlists;
-                while (temp) {
+                temp = playlists ;
+                while (temp != NULL) {
                     print_playlist(temp);
                     temp = temp->next;
                 }
@@ -299,7 +302,7 @@ int main() {
                 while(1){
                     int c ;
                     play_current_song(pl);
-                    printf("\n1. Play next\n2. Play previous\n3.Play current song again\n4.Exit playlist\nEnter choice: ");
+                    printf("\n1. Play next\n2. Play previous\n3. Play current song again\n4. Exit playlist\nEnter choice: ");
                     scanf("%d",&c);
                     getchar();
                     if(c == 4) break ;
@@ -314,13 +317,33 @@ int main() {
                             continue;
                     }
                 }
-                log_command("play_song_through_playlist");
+                logger("play_song_through_playlist");
                 break ;
             case 11:
+                temp = playlists ;
+                while (temp != NULL) {
+                    print_playlist(temp);
+                    temp = temp->next;
+                }
+                printf("Enter the name of Playlist needed to be removed: ");
+                scanf("%s",name);
+                getchar();
+                remove_playlist_by_name(&playlists , name);
+                break ;
+            case 12:
                 save_library(lib, SONGS_FILE, ALBUMS_FILE);
                 save_playlist(PLAYLISTS_FILE, playlists);
+                free_library(&lib);
+                free(temp);
+
+                Playlist* prev = playlists ;
+                while(prev != NULL){
+                    Playlist* next = prev->next ;
+                    free_playlist(&prev);
+                    prev = next ;
+                }
                 printf("All data saved. Goodbye!\n");
-                log_command("save_and_exit\n");
+                logger("save_and_exit\n");
                 return 0 ;
             default:
                 printf("Invalid choice.\n");
