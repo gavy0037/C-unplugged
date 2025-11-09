@@ -55,7 +55,7 @@ int main() {
         printf("10. Play Songs through playlists\n");//FIRST LIST ALL THE PLAYLISTS AND THEN PROMPT THE USER TO SELECT PLAYLIST add features in this about play next prev or delete this current song or add song in this playlist
         
         //add sub features like after creating a album then if you want to add song to this album or playlist
-        printf("10. Exit App\n");
+        printf("11. Exit App\n");
         printf("======================\n");
         printf("Enter choice: ");
         scanf("%d", &option);
@@ -63,25 +63,25 @@ int main() {
         
         switch(option){
             case 1:
-                print_all_songs(lib->songs);
+                {print_all_songs(lib->songs);
                 log_command("View_songs");
-                break;
+                break;}
 
             case 2:
-                list_all_albums(lib);
+                {list_all_albums(lib);
                 log_command("View_albums");
-                break;
+                break;}
 
             case 3:
-                Playlist *temp = playlists;
+                {Playlist *temp = playlists;
                 while (temp) {
                     print_playlist(temp);
                     temp = temp->next;
                 }
                 log_command("View_playlists");
-                break;
+                break;}
             case 4:
-                printf("Enter new album name: ");
+                {printf("Enter new album name: ");
                 scanf("%s",name);
                 getchar();
                 name[strcspn(name, "\n")] = 0;
@@ -113,9 +113,9 @@ int main() {
                         printf("Please enter a character from y or n\n");
                     }
                 }
-                break;
+                break;}
             case 5:
-                int albumid ;
+                {int albumid ;
                 list_all_albums(lib);
                 printf("Enter album id to add song to: ");
                 scanf("%d", &albumid);
@@ -147,9 +147,9 @@ int main() {
                         printf("Invalid choice\n");
                     }
                 }
-                break;
+                break;}
             case 6:
-                printf("Enter new playlist name: ");
+                {printf("Enter new playlist name: ");
                 scanf("%s" , name);
                 name[strcspn(name, "\n")] = 0;
                 Playlist *newpl = create_playlist(name);
@@ -180,9 +180,9 @@ int main() {
                         printf("Please enter a character from y or n\n");
                     }
                 }
-                break;
+                break;}
             case 7:
-                if (playlists == NULL) {
+                {if (playlists == NULL) {
                     printf("No playlists available.\n");
                     break;
                 }
@@ -209,9 +209,105 @@ int main() {
                     char ch ;
                     scanf("%c",&ch);
                     getchar();
-
+                    if(ch == 'n') break ;
+                    else if(ch != 'y' && ch != 'n'){
+                        printf("seems like you dont want to add a new song\n");
+                        break ;
+                    }
                 }
-                break;
+                break;}
+            case 8:
+                {if (playlists == NULL) {
+                    printf("No playlists available\n");
+                    break;
+                }
+                printf("Enter playlist name to add album to: ");
+                scanf("%s",name);
+                getchar();
+                name[strcspn(name, "\n")] = 0;
+                Playlist *pl = find_playlist_by_name(playlists, name);
+                if (pl == NULL){
+                    printf("No playlist exists for this name\n");
+                    break ;
+                }
+                int aid;
+                list_all_albums(lib);
+                printf("Enter album id to add: ");
+                scanf("%d", &aid);
+                getchar();
+                Album *alb = find_album_by_id(lib, aid);
+                if (alb == NULL) {
+                    printf("Album not found\n");
+                    break;
+                }
+                add_album_to_playlist(pl, alb);
+                log_command("Add_album_to_playlist");
+                break;}
+            case 9:
+                {int aid, sid;
+                list_all_albums(lib);
+                printf("Enter album id to delete song from: ");
+                scanf("%d", &aid);
+                getchar();
+                Album *alb = find_album_by_id(lib, aid);
+                if (alb == NULL) {
+                    printf("Album not found.\n");
+                    break;
+                }
+                print_all_songs(lib->songs);
+                printf("Enter song id to delete: ");
+                scanf("%d", &sid);
+                getchar();
+                Song *song = find_song_by_id(alb->songlist, sid);
+                if (song == NULL ) {
+                    printf("Song not found in album\n");
+                    break;
+                }
+                remove_song_from_album(&alb, song);
+                log_command("delete_song_from_album");
+                break;}
+            case 10:
+                if (playlists == NULL) {
+                    printf("No playlists available.\n");
+                    break;
+                }
+                printf("Enter playlist name to control: ");
+                scanf("%s",name);
+                getchar();
+                name[strcspn(name, "\n")] = 0;
+                Playlist *pl = find_playlist_by_name(playlists, name);
+                if (pl == NULL) {
+                    printf("No song exist for this name\n");
+                    break;
+                }
+                while(1){
+                    int c ;
+                    play_current_song(pl);
+                    printf("1. Play next\n2. Play previous\n3.Play current song again\n4.Exit playlist\nEnter choice: ");
+                    scanf("%d",&c);
+                    getchar();
+                    if(c == 4) break ;
+                    switch(c){
+                        case 1:
+                            play_next_song(pl);
+                            break ;
+                        case 2:
+                            play_prev_song(pl);
+                            break ;
+                        case 3:
+                            continue;
+                    }
+                }
+                log_command("play_song_through_playlist");
+                break ;
+            case 11:
+                save_library(lib, SONGS_FILE, ALBUMS_FILE);
+                save_playlist(PLAYLISTS_FILE, playlists);
+                printf("All data saved. Goodbye!\n");
+                log_command("save_and_exit");
+                return 0 ;
+            default:
+                printf("Invalid choice.\n");
         }
     }
     return 0;

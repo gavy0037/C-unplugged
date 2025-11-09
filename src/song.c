@@ -27,6 +27,11 @@ void add_song(Song **head , Song *newsong){
     return ;
 }
 
+void print_single_song(Song *song){
+    printf("Name :%s Artist's name: %s Duration: %s\n" , 
+        song->name , song->A_name , song->duration);
+}
+
 void print_all_songs(Song *head){
     if (head == NULL) {
         printf("No songs in library\n");

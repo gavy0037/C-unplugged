@@ -13,6 +13,7 @@ typedef struct Song{
 }Song ;
 
 Song* create_song(int id, char *name ,char *A_name,char *duration);
+void print_single_song(Song *song);
 void add_song(Song **head, Song *newSong);
 void print_all_songs(Song *head);
 void free_song_list(Song **head);
