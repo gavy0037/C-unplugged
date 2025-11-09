@@ -35,7 +35,7 @@ void print_playlist(Playlist *pl);
 
 void add_playlist(Playlist **head  , Playlist *newpl );
 void remove_playlist_by_name(Playlist **head , char *name);
-Playlist* load_playlist(char *filename , Library *lib);
+Playlist* load_playlists(char *filename , Library *lib);
 void save_playlist(char *filename , Playlist *head);
 
 #endif

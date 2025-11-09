@@ -13,7 +13,7 @@ SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
 # Output executable
-TARGET = $(BIN_DIR)/music-player
+TARGET = $(BIN_DIR)/mp
 
 # Default target
 all: directories $(TARGET)

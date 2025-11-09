@@ -106,12 +106,13 @@ void print_playlist(Playlist *pl){
         printf("PLAYLIST IS EMPTY\n");
         return ;
     }
-    printf("\n---PLAYLIST---\n");
+    printf("\n--- PLAYLIST: %s ---\n", pl->name);
     Playlistnode *st = pl->curr  , *temp = pl->curr ;
     do{
         printf("-> %s " ,temp->song->name);
         temp = temp->next ;
     } while(st != temp) ;
+    printf("\n");
 }
 
 void add_playlist(Playlist **head , Playlist *newpl){
@@ -149,7 +150,7 @@ void remove_playlist_by_name(Playlist **head , char *name){
 
 // format of playlist.txt playlist name , Song ids 1|2|3|4
 
-Playlist *load_playlist(char *filename , Library *lib){
+Playlist *load_playlists(char *filename , Library *lib){
     FILE *file ;
     file = fopen(filename , "r");
     if(file == NULL){

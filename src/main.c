@@ -14,11 +14,21 @@
 void log_command(const char *command);
 
 int main() {
-    Library *lib = create_library();
+    Library *lib = load_library(SONGS_FILE, ALBUMS_FILE);
     Playlist *playlists = NULL;
-
+    int songid = 0, albumid = 0;
     // Load data from previous session
-    load_library(&lib, SONGS_FILE, ALBUMS_FILE);
+    Song *song = lib->songs ;
+    while(song != NULL){
+        song = song->next ;
+        songid++ ;
+    }
+    Album *album = lib->albums ;
+    while(album != NULL){
+        album = album->next ;
+        albumid++;
+    }
+
     playlists = load_playlists(PLAYLISTS_FILE, lib);
 
     int choice;
@@ -51,7 +61,7 @@ int main() {
                 break;
 
             case 2:
-                print_all_albums(lib->albums);
+                list_all_albums(lib);
                 log_command("list albums");
                 break;
 
@@ -59,7 +69,8 @@ int main() {
                 printf("Enter new album name: ");
                 fgets(name, sizeof(name), stdin);
                 name[strcspn(name, "\n")] = 0;
-                create_and_add_album(&lib, name);
+                Album* album = create_album( ++albumid , name);
+                add_album_to_library(lib, album);
                 log_command("create album");
                 break;
 
@@ -67,7 +78,8 @@ int main() {
                 printf("Enter new playlist name: ");
                 fgets(name, sizeof(name), stdin);
                 name[strcspn(name, "\n")] = 0;
-                add_playlist(&playlists, name);
+                Playlist *newpl = create_playlist(name);
+                add_playlist(&playlists, newpl);
                 log_command("create playlist");
                 break;
 
@@ -82,6 +94,7 @@ int main() {
                 break;
 
             case 10:
+            {
                 Playlist *temp = playlists;
                 while (temp) {
                     print_playlist(temp);
@@ -90,6 +103,7 @@ int main() {
                 log_command("view playlists");
                 break;
 
+            }
             case 11:
                 save_library(lib, SONGS_FILE, ALBUMS_FILE);
                 save_playlist(PLAYLISTS_FILE, playlists);
