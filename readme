@@ -1,23 +1,21 @@
 C-Unplugged/
 │
-├── include/               # Header files (.h)
+├── include/
 │   ├── song.h
 │   ├── album.h
 │   ├── playlist.h
-│   ├── cli.h
-│   └── logger.h
+│   ├── library.h
 │
-├── src/                   # Source files (.c)
+├── src/
+│   ├── main.c
 │   ├── song.c
 │   ├── album.c
 │   ├── playlist.c
-│   ├── cli.c
-│   └── logger.c
+│   ├── library.c
 │
-├── data/                  # Persistent files
-│   ├── songs.txt          # Master song library
-│   ├── albums.txt         # Saved album info
-│   └── log.txt            # User command history
-│
-├── main.c                 # Entry point of the program
-└── Makefile               # To compile all .c files together
+├── data/                  
+│   ├── songs.txt          
+│   ├── albums.txt         
+│   ├── playlists.txt            
+│   └── commands.log               
+└── Makefile
