@@ -11,13 +11,18 @@
 #define PLAYLISTS_FILE "data/playlist.txt"
 #define LOG_FILE "data/commands.log"
 
-void log_command(const char *command);
+
+void log_command(const char *command) {
+    FILE *log = fopen(LOG_FILE, "a");
+    if (!log) return;
+    fprintf(log, "%s\n", command);
+    fclose(log);
+}
 
 int main() {
     Library *lib = load_library(SONGS_FILE, ALBUMS_FILE);
     Playlist *playlists = NULL;
     int songid = 0, albumid = 0;
-    // Load data from previous session
     Song *song = lib->songs ;
     while(song != NULL){
         song = song->next ;
@@ -28,213 +33,186 @@ int main() {
         album = album->next ;
         albumid++;
     }
-
     playlists = load_playlists(PLAYLISTS_FILE, lib);
-    if(playlists == NULL){
-        printf("WARNING : PLAYLIST's LOADING FAILED\n");
-    }
-    print_playlist(playlists);
-    int choice;
-    char name[100];
+    int option ;
+    char name[100];//used to take the inputs of newly added things ;
 
     while (1) {
-        printf("\n======================\n");
-        printf(" C-Unplugged CLI \n");
-        printf("======================\n");
-        printf("1. List all songs\n");
-        printf("2. List all albums\n");
-        printf("3. Create new album\n");
-        printf("4. Add song to album\n");
-        printf("5. Delete song from album\n");
-        printf("6. Create new playlist\n");
-        printf("7. Add album to playlist\n");
-        printf("8. Add single song to playlist\n");
-        printf("9. Play next / previous song\n");
-        printf("10. View all playlists\n");
-        printf("11. Save and Exit\n");
+
+        printf("\n-----------------------------------\n");
+        printf("|         C-unplugged menu        |\n");
+        printf("-----------------------------------\n");
+        printf("INSTRUCTIONS FOR ADDING A NEW PLAYLIST/ALBUM : Do not add a name with spaces\n");
+        printf("1. View all songs\n");
+        printf("2. View all albums\n");
+        printf("3. View all Playlists\n");
+        printf("4. Create new Album\n");
+        printf("5. Add song to Album\n");
+        printf("6. Create new Playlist\n");
+        printf("7. Add song to playlist\n");
+        printf("8. Add album to playlist\n");
+        printf("9. Remove song from Album\n");
+        printf("10. Play Songs through playlists\n");//FIRST LIST ALL THE PLAYLISTS AND THEN PROMPT THE USER TO SELECT PLAYLIST add features in this about play next prev or delete this current song or add song in this playlist
+        
+        //add sub features like after creating a album then if you want to add song to this album or playlist
+        printf("10. Exit App\n");
         printf("======================\n");
         printf("Enter choice: ");
-        scanf("%d", &choice);
-        getchar();
-        switch (choice) {
+        scanf("%d", &option);
+        getchar();// to get the extra newline so that it do not affect the input of names of new things
+        
+        switch(option){
             case 1:
                 print_all_songs(lib->songs);
-                log_command("list songs");
+                log_command("View_songs");
                 break;
 
             case 2:
                 list_all_albums(lib);
-                log_command("list albums");
+                log_command("View_albums");
                 break;
 
             case 3:
-                printf("Enter new album name: ");
-                fgets(name, sizeof(name), stdin);
-                name[strcspn(name, "\n")] = 0;
-                Album* album = create_album( ++albumid , name);
-                add_album_to_library(lib, album);
-                log_command("create album");
-                break;
-
-            case 4: {
-                int aid, sid;
-                printf("Enter album id to add song to: ");
-                scanf("%d", &aid);
-                getchar();
-                Album *alb = find_album_by_id(lib, aid);
-                if (!alb) {
-                    printf("Album not found.\n");
-                    break;
-                }
-                printf("Enter song id to add: ");
-                scanf("%d", &sid);
-                getchar();
-                Song *ss = search_song_in_lib(lib, sid);
-                if (!ss) {
-                    printf("Song not found in library.\n");
-                    break;
-                }
-                /* create a copy of the song node for album storage */
-                Song *copy = create_song(ss->id, ss->name, ss->A_name, ss->duration);
-                add_song_to_album(&alb, copy);
-                log_command("add song to album");
-                break;
-            }
-
-            case 5: {
-                int aid, sid;
-                printf("Enter album id to delete song from: ");
-                scanf("%d", &aid);
-                getchar();
-                Album *alb = find_album_by_id(lib, aid);
-                if (!alb) {
-                    printf("Album not found.\n");
-                    break;
-                }
-                printf("Enter song id to delete: ");
-                scanf("%d", &sid);
-                getchar();
-                Song *toremove = find_song_by_id(alb->songlist, sid);
-                if (!toremove) {
-                    printf("Song not found in album.\n");
-                    break;
-                }
-                remove_song_from_album(&alb, toremove);
-                log_command("delete song from album");
-                break;
-            }
-
-            case 6:
-                printf("Enter new playlist name: ");
-                fgets(name, sizeof(name), stdin);
-                name[strcspn(name, "\n")] = 0;
-                Playlist *newpl = create_playlist(name);
-                add_playlist(&playlists, newpl);
-                log_command("create playlist");
-                break;
-
-            case 9:
-                {
-                    if (playlists == NULL) {
-                        printf("No playlists available.\n");
-                        break;
-                    }
-                    printf("Enter playlist name to control: ");
-                    fgets(name, sizeof(name), stdin);
-                    name[strcspn(name, "\n")] = 0;
-                    Playlist *pl = find_playlist_by_name(playlists, name);
-                    if (!pl) {
-                        break;
-                    }
-                    int dir;
-                    printf("1. Play next\n2. Play previous\n3. Play current\nEnter choice: ");
-                    scanf("%d", &dir);
-                    getchar();
-                    if (dir == 1) play_next_song(pl);
-                    else if (dir == 2) play_prev_song(pl);
-                    else if (dir == 3) play_current_song(pl);
-                    else printf("Invalid option.\n");
-                    log_command("play control");
-                }
-                break;
-
-            case 10:
-            {
                 Playlist *temp = playlists;
                 while (temp) {
                     print_playlist(temp);
                     temp = temp->next;
                 }
-                log_command("view playlists");
+                log_command("View_playlists");
                 break;
+            case 4:
+                printf("Enter new album name: ");
+                scanf("%s",name);
+                getchar();
+                name[strcspn(name, "\n")] = 0;
+                Album* album = create_album( ++albumid , name);
+                add_album_to_library(lib, album);
+                log_command("Created_new_Album");
+                while(1){
+                    char ch  ;
+                    printf("Do you wish to add song to this album\n[y/n] :");
+                    scanf("%c",&ch);
+                    getchar();
+                    print_all_songs(lib->songs);
+                    if(ch == 'y'){
+                        int ssid ;
+                        printf("Enter song id to add: ");
+                        scanf("%d", &ssid);
+                        getchar();
+                        Song *song = search_song_in_lib(lib, ssid);
+                        if (song == NULL) {
+                            printf("Song not found in library.\n");
+                            break;
+                        }
+                        Song *copy = create_song(song->id, song->name, song->A_name, song->duration);
+                        add_song_to_album(album, copy);
+                        log_command("Add_song_to_album");
+                    }else if(ch == 'n') break ;
 
-            }
-            case 7: {
+                    else{
+                        printf("Please enter a character from y or n\n");
+                    }
+                }
+                break;
+            case 5:
+                int albumid ;
+                list_all_albums(lib);
+                printf("Enter album id to add song to: ");
+                scanf("%d", &albumid);
+                getchar();
+                while(1){
+                    int songid;
+                    Album *alb = find_album_by_id(lib, albumid);
+                    if (alb == NULL) {
+                        printf("Album not found.\n");
+                        break;
+                    }
+                    print_all_songs(lib->songs);
+                    printf("Enter song id to add: ");
+                    scanf("%d", &songid);
+                    getchar();
+                    Song *song = search_song_in_lib(lib, songid);
+                    if (song == NULL) {
+                        printf("Song does not exist\n");
+                        break;
+                    }
+                    Song *copy = create_song(song->id, song->name, song->A_name, song->duration);
+                    add_song_to_album(&alb, copy);
+                    log_command("Add_song_to_album");
+                    printf("Do you wish to add another song to this album\n[y/n]");
+                    char ch ;
+                    scanf("%c",&ch);
+                    if(ch == 'n') break ;
+                    else if(ch != 'n' && ch != 'y'){
+                        printf("Invalid choice\n");
+                    }
+                }
+                break;
+            case 6:
+                printf("Enter new playlist name: ");
+                scanf("%s" , name);
+                name[strcspn(name, "\n")] = 0;
+                Playlist *newpl = create_playlist(name);
+                add_playlist(&playlists, newpl);
+                log_command("Create_playlist");
+                while(1){
+                    char ch  ;
+                    printf("Do you wish to add song to this Playlist\n[y/n]: ");
+                    scanf("%c",&ch);
+                    getchar();
+                    if(ch == 'y'){
+                        int ssid ;
+                        print_all_songs(lib->songs);
+                        printf("Enter song id to add: ");
+                        scanf("%d", &ssid);
+                        getchar();
+                        Song *song = search_song_in_lib(lib, ssid);
+                        if (song == NULL) {
+                            printf("Song does not exist\n");
+                            break;
+                        }
+                        Song *copy = create_song(song->id, song->name, song->A_name, song->duration);
+                        add_song_to_album(album, copy);
+                        log_command("Add_song_to_album");
+                    }else if(ch == 'n') break ;
+
+                    else{
+                        printf("Please enter a character from y or n\n");
+                    }
+                }
+                break;
+            case 7:
                 if (playlists == NULL) {
                     printf("No playlists available.\n");
                     break;
                 }
-                printf("Enter playlist name to add album to: ");
-                fgets(name, sizeof(name), stdin);
+                printf("Enter playlist name to add songs to: ");
+                scanf("%s",name);
+                getchar();
                 name[strcspn(name, "\n")] = 0;
                 Playlist *pl = find_playlist_by_name(playlists, name);
-                if (!pl) break;
-                int aid;
-                printf("Enter album id to add: ");
-                scanf("%d", &aid);
-                getchar();
-                Album *alb = find_album_by_id(lib, aid);
-                if (!alb) {
-                    printf("Album not found.\n");
-                    break;
-                }
-                add_album_to_playlist(pl, alb);
-                log_command("add album to playlist");
-                break;
-            }
+                while(1){
+                    if (pl == NULL) break;
+                    int sid;
+                    print_all_songs(lib->songs);
+                    printf("Enter song id to add: ");
+                    scanf("%d", &sid);
+                    getchar();
+                    Song *sng = search_song_in_lib(lib, sid);
+                    if (sng == NULL) {
+                        printf("Song not found in library.\n");
+                        break;
+                    }
+                    add_song_to_playlist(pl, sng);
+                    log_command("add_song_to_playlist");
+                    printf("Do you wish to add another song to this playlist\n[y/n]");
+                    char ch ;
+                    scanf("%c",&ch);
+                    getchar();
 
-            case 8: {
-                if (playlists == NULL) {
-                    printf("No playlists available.\n");
-                    break;
                 }
-                printf("Enter playlist name to add song to: ");
-                fgets(name, sizeof(name), stdin);
-                name[strcspn(name, "\n")] = 0;
-                Playlist *pl = find_playlist_by_name(playlists, name);
-                if (!pl) break;
-                int sid;
-                printf("Enter song id to add: ");
-                scanf("%d", &sid);
-                getchar();
-                Song *sng = search_song_in_lib(lib, sid);
-                if (!sng) {
-                    printf("Song not found in library.\n");
-                    break;
-                }
-                add_song_to_playlist(pl, sng);
-                log_command("add song to playlist");
                 break;
-            }
-            case 11:
-                save_library(lib, SONGS_FILE, ALBUMS_FILE);
-                save_playlist(PLAYLISTS_FILE, playlists);
-                printf("All data saved. Goodbye!\n");
-                log_command("save and exit");
-                return 0;
-
-            default:
-                printf("Invalid choice.\n");
         }
     }
-
     return 0;
-}
-
-// Append every user command to a log file
-void log_command(const char *command) {
-    FILE *log = fopen(LOG_FILE, "a");
-    if (!log) return;
-    fprintf(log, "%s\n", command);
-    fclose(log);
 }

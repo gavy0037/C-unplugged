@@ -28,14 +28,23 @@ void add_song(Song **head , Song *newsong){
 }
 
 void print_all_songs(Song *head){
-    if(head == NULL){
-        printf("Empty list\n");
-        return ;
+    if (head == NULL) {
+        printf("No songs in library\n");
+        return;
     }
-    while(head!=NULL){
-        printf("Id: %d    Song Name: %s    Artist's Name: %s    Duration: [%s]\n"
-        ,head->id , head->name , head->A_name , head->duration );
-        head = head->next ;
+
+    /* Print table header */
+    printf("\n%-4s  %-30s  %-25s  %s\n", "ID", "Song Name", "Artist", "Duration");
+    printf("%-4s  %-30s  %-25s  %s\n", "----", "------------------------------", "-------------------------", "--------");
+
+    /* Print each song in aligned columns */
+    while (head != NULL) {
+        printf("%-4d  %-30s  %-25s  %6s\n",
+               head->id,
+               head->name,
+               head->A_name,
+               head->duration);
+        head = head->next;
     }
 }
 

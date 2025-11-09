@@ -6,11 +6,9 @@
 
 Playlist* create_playlist(char *name){
     Playlist *newplaylist = malloc(sizeof(Playlist));
-    if (newplaylist == NULL) return NULL;
-    newplaylist->curr = NULL;
-    newplaylist->next = NULL;
-    newplaylist->size = 0;
-    strcpy(newplaylist->name, name);
+    newplaylist->curr->next = newplaylist->curr->prev = NULL ;
+    newplaylist->size = 0 ;
+    strcpy(newplaylist->name , name);
     return newplaylist ;
 }
 
@@ -128,7 +126,6 @@ void add_playlist(Playlist **head , Playlist *newpl){
     Playlist *temp = (*head);
     while(temp->next != NULL) temp = temp->next ;
     temp->next = newpl ;
-    newpl->next = NULL ;
 }
 
 void remove_playlist_by_name(Playlist **head , char *name){
@@ -164,25 +161,20 @@ Playlist *load_playlists(char *filename , Library *lib){
     Playlist *head = NULL ;
     while(fgets(line , sizeof(line) , file) != NULL){
         line[strcspn(line, "\n")] = 0;
-        char name[100] , songids[200] = {0};
-
-        sscanf(line , "%[^,],%s",name , songids);
+        char name[100] , songids[200];
+        sscanf(line , "%s,%s",name , songids);
         Playlist *newpl = create_playlist(name);
-        if(songids[0] != 0){
-            char *token = strtok(songids , "|");
-            while(token != NULL){
-                int id = atoi(token);
-                Song *song = search_song_in_lib(lib , id);
-                if(song != NULL) add_song_to_playlist(newpl , song);
-                token = strtok(NULL , "|");
-            }
+        char *token = strtok(songids , "|");
+        while(token != NULL){
+            int id = atoi(token);
+            Song *song = search_song_in_lib(lib , id);
+            if(song != NULL) add_song_to_playlist(newpl , song);
+            token = strtok(NULL , "|");
         }
         add_playlist(&head , newpl);
     }
     fclose(file);
-    // if(head == NULL){
-    //     printf(" PLAYLIST HEAD IS NULL\n");
-    // }
+
     return head ;
 }   
 
@@ -194,11 +186,10 @@ void save_playlist(char *filename , Playlist *head){
         return ;
     }
     while(head != NULL){
-        fprintf(file , "%s" , head->name);
+        fprintf(file , "%s," , head->name);
         Playlistnode *st , *temp ;
         st = temp = head->curr ;
         if(st != NULL){
-            fprintf(file  , ",");
             do{
                 int id = temp->song->id ;
                 fprintf(file , "%d" , id);
