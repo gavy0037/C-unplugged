@@ -33,6 +33,7 @@ Library* load_library(char *songfile , char *albumfile){
 void save_library(Library *lib , char *songsfile , char *albumsfile){
     save_albums(albumsfile , lib->albums);
     save_songs(songsfile , lib->songs);
+    printf("LIBRARY HAS BEEN SAVED SUCCESFULLY\n");
 }
 
 void print_lib_song(Library *lib){
