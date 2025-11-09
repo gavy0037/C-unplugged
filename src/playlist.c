@@ -59,7 +59,7 @@ void play_current_song(Playlist *pl){
         printf("---PLAYLIST IS EMPTY---\n");
     }else{
         Song *song = pl->curr->song ;
-        printf("** PLAYING ** - ID: %d Name: %s Artist's Name: %s Duration: [%s]\n",
+        printf("\n** PLAYING ** - ID: %d Name: %s Artist's Name: %s Duration: [%s]\n",
             song->id , song->name , song->A_name , song->duration);
     }
 }
@@ -70,7 +70,6 @@ void play_next_song(Playlist* pl){
         return ;
     }
     pl->curr = pl->curr->next ;
-    play_current_song(pl);
 }
 
 void play_prev_song(Playlist* pl){
@@ -79,7 +78,6 @@ void play_prev_song(Playlist* pl){
         return ;
     }
     pl->curr = pl->curr->prev ;
-    play_current_song(pl);
 }
 
 void add_album_to_playlist(Playlist *pl , Album *album){

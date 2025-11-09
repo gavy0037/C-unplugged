@@ -93,8 +93,9 @@ int main() {
                     printf("Do you wish to add song to this album [y/n] : ");
                     scanf("%c",&ch);
                     getchar();
-                    print_all_songs(lib->songs);
-                    if(ch == 'y'){
+                    if(ch == 'n') break ;
+                    else if(ch == 'y'){
+                        print_all_songs(lib->songs);
                         int ssid ;
                         printf("Enter song id to add: ");
                         scanf("%d", &ssid);
@@ -107,17 +108,16 @@ int main() {
                         Song *copy = create_song(song->id, song->name, song->A_name, song->duration);
                         add_song_to_album(&album, copy);
                         log_command("Add_song_to_album");
-                    }else if(ch == 'n') break ;
-
-                    else{
-                        printf("Please enter a character from y or n\n");
+                    }else{
+                        printf("Looks like you do not want to add a song to this album\n");
+                        break ;
                     }
                 }
                 break;}
             case 5:
                 {int albumid ;
                 list_all_albums(lib);
-                printf("Enter album id to add song to: ");
+                printf("\nEnter album id to add song to: ");
                 scanf("%d", &albumid);
                 getchar();
                 while(1){
@@ -138,6 +138,7 @@ int main() {
                     }
                     Song *copy = create_song(song->id, song->name, song->A_name, song->duration);
                     add_song_to_album(&alb, copy);
+                    printf("SONG ADDED SUCCESFULLY\n");
                     log_command("Add_song_to_album");
                     printf("Do you wish to add another song to this album [y/n]: ");
                     char ch ;
@@ -177,6 +178,7 @@ int main() {
                         }
                         add_song_to_playlist(newpl, song);
                         log_command("Add_song_to_playlist");
+                        printf("SONG ADDED SUCCESFULLy\n");
                     }else if(ch == 'n') break;
                     else{
                         printf("Looks like you don't want to enter a song\n");
@@ -208,6 +210,7 @@ int main() {
                     }
                     add_song_to_playlist(pl, sng);
                     log_command("add_song_to_playlist");
+                    printf("SONG ADDED SUCCESFULLY\n");
                     printf("Do you wish to add another song to this playlist [y/n]: ");
                     char ch ;
                     scanf("%c",&ch);
@@ -223,6 +226,11 @@ int main() {
                 {if (playlists == NULL) {
                     printf("No playlists available\n");
                     break;
+                }
+                Playlist *temp = playlists;
+                while (temp) {
+                    print_playlist(temp);
+                    temp = temp->next;
                 }
                 printf("Enter playlist name to add album to: ");
                 scanf("%s",name);
@@ -274,7 +282,12 @@ int main() {
                     printf("No playlists available.\n");
                     break;
                 }
-                printf("Enter playlist name to control: ");
+                Playlist *temp = playlists;
+                while (temp) {
+                    print_playlist(temp);
+                    temp = temp->next;
+                }
+                printf("Enter playlist name to play: ");
                 scanf("%s",name);
                 getchar();
                 name[strcspn(name, "\n")] = 0;
@@ -286,7 +299,7 @@ int main() {
                 while(1){
                     int c ;
                     play_current_song(pl);
-                    printf("1. Play next\n2. Play previous\n3.Play current song again\n4.Exit playlist\nEnter choice: ");
+                    printf("\n1. Play next\n2. Play previous\n3.Play current song again\n4.Exit playlist\nEnter choice: ");
                     scanf("%d",&c);
                     getchar();
                     if(c == 4) break ;
