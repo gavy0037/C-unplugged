@@ -320,7 +320,7 @@ int main() {
                 save_library(lib, SONGS_FILE, ALBUMS_FILE);
                 save_playlist(PLAYLISTS_FILE, playlists);
                 printf("All data saved. Goodbye!\n");
-                log_command("save_and_exit");
+                log_command("save_and_exit\n");
                 return 0 ;
             default:
                 printf("Invalid choice.\n");
