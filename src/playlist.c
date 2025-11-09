@@ -4,12 +4,16 @@
 
 #include"../include/playlist.h"
 
-Playlist* create_playlist(char *name){
+Playlist* create_playlist(char *name) {
     Playlist *newplaylist = malloc(sizeof(Playlist));
-    newplaylist->curr->next = newplaylist->curr->prev = NULL ;
-    newplaylist->size = 0 ;
-    strcpy(newplaylist->name , name);
-    return newplaylist ;
+    if (newplaylist == NULL) {
+        return NULL;
+    }
+    newplaylist->curr = NULL;
+    newplaylist->size = 0;
+    newplaylist->next = NULL;
+    strcpy(newplaylist->name, name);
+    return newplaylist;
 }
 
 Playlist* find_playlist_by_name(Playlist *head  , char *name){
@@ -18,7 +22,7 @@ Playlist* find_playlist_by_name(Playlist *head  , char *name){
         if(strcmp(temp->name , name) == 0) return temp ;
         temp = temp->next ;
     }
-    printf("---PLAYLIST NOT FOUND\n");
+    printf("---PLAYLIST NOT FOUND---\n");
     return NULL ;
 }
 
@@ -36,7 +40,6 @@ void add_song_to_playlist(Playlist* playlist , Song *song){//add song to the nex
         newpl->prev = playlist->curr ;
     }
     playlist->size++;
-    printf("---SONG ADDED SUCCESFULLY---\n");
 }
 
 void remove_current_song(Playlist *pl){
@@ -162,7 +165,7 @@ Playlist *load_playlists(char *filename , Library *lib){
     while(fgets(line , sizeof(line) , file) != NULL){
         line[strcspn(line, "\n")] = 0;
         char name[100] , songids[200];
-        sscanf(line , "%s,%s",name , songids);
+        sscanf(line , "%[^,],%s",name , songids);
         Playlist *newpl = create_playlist(name);
         char *token = strtok(songids , "|");
         while(token != NULL){

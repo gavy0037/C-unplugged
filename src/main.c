@@ -42,7 +42,7 @@ int main() {
         printf("\n-----------------------------------\n");
         printf("|         C-unplugged menu        |\n");
         printf("-----------------------------------\n");
-        printf("INSTRUCTIONS FOR ADDING A NEW PLAYLIST/ALBUM : Do not add a name with spaces\n");
+        printf("INSTRUCTIONS FOR ADDING A NEW PLAYLIST/ALBUM : NO spaces are allowed and no duplicate names of albums or songs may exist\n");
         printf("1. View all songs\n");
         printf("2. View all albums\n");
         printf("3. View all Playlists\n");
@@ -90,7 +90,7 @@ int main() {
                 log_command("Created_new_Album");
                 while(1){
                     char ch  ;
-                    printf("Do you wish to add song to this album\n[y/n] :");
+                    printf("Do you wish to add song to this album [y/n] : ");
                     scanf("%c",&ch);
                     getchar();
                     print_all_songs(lib->songs);
@@ -105,7 +105,7 @@ int main() {
                             break;
                         }
                         Song *copy = create_song(song->id, song->name, song->A_name, song->duration);
-                        add_song_to_album(album, copy);
+                        add_song_to_album(&album, copy);
                         log_command("Add_song_to_album");
                     }else if(ch == 'n') break ;
 
@@ -139,7 +139,7 @@ int main() {
                     Song *copy = create_song(song->id, song->name, song->A_name, song->duration);
                     add_song_to_album(&alb, copy);
                     log_command("Add_song_to_album");
-                    printf("Do you wish to add another song to this album\n[y/n]");
+                    printf("Do you wish to add another song to this album [y/n]: ");
                     char ch ;
                     scanf("%c",&ch);
                     if(ch == 'n') break ;
@@ -153,15 +153,19 @@ int main() {
                 scanf("%s" , name);
                 name[strcspn(name, "\n")] = 0;
                 Playlist *newpl = create_playlist(name);
+                if (newpl == NULL) {
+                    printf("Failed to create playlist\n");
+                    break;
+                }
                 add_playlist(&playlists, newpl);
                 log_command("Create_playlist");
                 while(1){
-                    char ch  ;
-                    printf("Do you wish to add song to this Playlist\n[y/n]: ");
-                    scanf("%c",&ch);
+                    printf("Do you wish to add song to this Playlist [y/n]: ");
+                    char ch;
+                    scanf(" %c", &ch);
                     getchar();
                     if(ch == 'y'){
-                        int ssid ;
+                        int ssid;
                         print_all_songs(lib->songs);
                         printf("Enter song id to add: ");
                         scanf("%d", &ssid);
@@ -171,13 +175,12 @@ int main() {
                             printf("Song does not exist\n");
                             break;
                         }
-                        Song *copy = create_song(song->id, song->name, song->A_name, song->duration);
-                        add_song_to_album(album, copy);
-                        log_command("Add_song_to_album");
-                    }else if(ch == 'n') break ;
-
+                        add_song_to_playlist(newpl, song);
+                        log_command("Add_song_to_playlist");
+                    }else if(ch == 'n') break;
                     else{
-                        printf("Please enter a character from y or n\n");
+                        printf("Looks like you don't want to enter a song\n");
+                        break ;
                     }
                 }
                 break;}
@@ -205,7 +208,7 @@ int main() {
                     }
                     add_song_to_playlist(pl, sng);
                     log_command("add_song_to_playlist");
-                    printf("Do you wish to add another song to this playlist\n[y/n]");
+                    printf("Do you wish to add another song to this playlist [y/n]: ");
                     char ch ;
                     scanf("%c",&ch);
                     getchar();
