@@ -1,17 +1,52 @@
+*INSTRUCTIONS: The names of all the albums and playlist created must not contain spaces .*
+
+I have maintained .txt files for songs , albums and playlists , So all three are presistent between diffrent runs .
+There is not feature to modift the songs.txt files . If you want to do so then please do manually .
+
+*Implementaion* :
+
+Each song and album has it unique integer ID that is used to search. The ids are maintained in variables so there is no need to enter a ID for creating albums .
+Whenever user has to do some operations on albums or playlists the user is shown the complete library of current albums and playlist and asked to give the ID of the one that they want to modify .
+
+At the start of program I load all the songs , albums and playlists into linked lists and i have created a library struct that holds the linked lists 
+for songs and albums .
+For playlists i have used circular doubly linked list to transverse both sides .
+
+Every album and playlist has its linked list of songs.
+Any operation that is performed in the runtime is done in the linked lists and After the run all the linked list data (i.e after the changes that the user has made)
+the linked lists are loaded back to their respective .txt files.
+
+I have added free functions also that free all the dynamically stored memory after the run .
+
+Features available:
+1.View songs , albums and playlists .
+2.Create a albums and playlists .
+3.Add songs to new playlists and albums (after creation as well as while creating) and existing albums and playlist .
+4.Delete playlists and albums .
+6.Play a playlist with features of playing next , previous and current song again .
+
+*MakeFile*:
+Make : complies the code
+Make run: run the program as well as if not compiled compiles it .
+Make Clean : Deletes the executable file and the object files .
+Make rebuild : Same as running Make clean and Make (sequentially) .
+
+
+File structure: 
 C-Unplugged/
 │
 ├── include/
 │   ├── song.h
 │   ├── album.h
 │   ├── playlist.h
-│   ├── library.h
+│   └── library.h
 │
 ├── src/
 │   ├── main.c
 │   ├── song.c
 │   ├── album.c
 │   ├── playlist.c
-│   ├── library.c
+│   └── library.c
 │
 ├── data/                  
 │   ├── songs.txt          
@@ -19,3 +54,4 @@ C-Unplugged/
 │   ├── playlists.txt            
 │   └── commands.log               
 └── Makefile
+
