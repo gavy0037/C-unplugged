@@ -37,6 +37,8 @@ int main() {
     int option ;
     char name[100];//used to take the inputs of newly added things ;
     Playlist *temp ;
+
+    logger("Start");
     while (1) {
 
         printf("\n-----------------------------------\n");
@@ -76,6 +78,10 @@ int main() {
             case 3:
                 {
                 temp = playlists ;
+                if(temp == NULL){
+                    printf("No playlists available\n");
+                    break ;
+                }
                 while (temp != NULL) {
                     print_playlist(temp);
                     temp = temp->next;
@@ -102,6 +108,10 @@ int main() {
                         printf("Enter song id to add: ");
                         scanf("%d", &ssid);
                         getchar();
+                        if(ssid>songid || ssid <= 0){
+                            printf("***** INVALID SONG ID *****\n!!! Enter Again !!!\n");
+                            continue ;
+                        }
                         Song *song = search_song_in_lib(lib, ssid);
                         if (song == NULL) {
                             printf("Song not found in library.\n");
@@ -116,31 +126,42 @@ int main() {
                     }
                 }
                 break;}
-            case 5:
-                {int albumid ;
+            case 5:{
+                if(lib->albums == NULL){
+                    printf("**** NO ALBUMS AVAILABLE RIGHT NOW ****\n");
+                }
+                int albid ;
                 list_all_albums(lib);
                 printf("\nEnter album id to add song to: ");
-                scanf("%d", &albumid);
+                scanf("%d", &albid);
                 getchar();
+                if(albid > albumid || albid <= 0){
+                    printf("*** INVALID ALBUM ID ****\n");
+                    break ;
+                }
                 while(1){
-                    int songid;
-                    Album *alb = find_album_by_id(lib, albumid);
+                    int sngid;
+                    Album *alb = find_album_by_id(lib, albid);
                     if (alb == NULL) {
                         printf("Album not found.\n");
                         break;
                     }
                     print_all_songs(lib->songs);
                     printf("Enter song id to add: ");
-                    scanf("%d", &songid);
+                    scanf("%d", &sngid);
                     getchar();
-                    Song *song = search_song_in_lib(lib, songid);
+                    if(sngid > songid || sngid <= 0){
+                            printf("***** INVALID SONG ID *****\n!!! Enter Again !!!\n");
+                            continue ;
+                    }
+                    Song *song = search_song_in_lib(lib, sngid);
                     if (song == NULL) {
                         printf("Song does not exist\n");
                         break;
                     }
                     Song *copy = create_song(song->id, song->name, song->A_name, song->duration);
                     add_song_to_album(&alb, copy);
-                    printf("SONG ADDED SUCCESFULLY\n");
+                    printf("**** SONG ADDED SUCCESFULLY ****\n");
                     logger("Add_song_to_album");
                     printf("Do you wish to add another song to this album [y/n]: ");
                     char ch ;
@@ -173,6 +194,10 @@ int main() {
                         printf("Enter song id to add: ");
                         scanf("%d", &ssid);
                         getchar();
+                        if(ssid > songid || ssid <= 0){
+                            printf("**** INVALID SONG ID ****\nEnter Again....\n");
+                            continue ;
+                        }
                         Song *song = search_song_in_lib(lib, ssid);
                         if (song == NULL) {
                             printf("Song does not exist\n");
@@ -188,15 +213,20 @@ int main() {
                     }
                 }
                 break;}
-            case 7:
-                {if (playlists == NULL) {
-                    printf("No playlists available.\n");
-                    break;
+            case 7:{
+                temp = playlists ;
+                if(temp == NULL){
+                    printf("No playlists available\n");
+                    break ;
+                }
+                while (temp != NULL) {
+                    print_playlist(temp);
+                    temp = temp->next;
                 }
                 printf("Enter playlist name to add songs to: ");
                 scanf("%s",name);
                 getchar();
-                name[strcspn(name, "\n")] = 0;
+                //name[strcspn(name, "\n")] = 0;
                 Playlist *pl = find_playlist_by_name(playlists, name);
                 while(1){
                     if (pl == NULL) break;
@@ -205,6 +235,10 @@ int main() {
                     printf("Enter song id to add: ");
                     scanf("%d", &sid);
                     getchar();
+                    if(sid  > songid || sid<= 0){
+                        printf(" **** INVALID SONG ID ****\nEnter Again ...\n");
+                        continue ;
+                    }
                     Song *sng = search_song_in_lib(lib, sid);
                     if (sng == NULL) {
                         printf("Song not found in library.\n");
@@ -238,7 +272,7 @@ int main() {
                 printf("Enter playlist name to add album to: ");
                 scanf("%s",name);
                 getchar();
-                name[strcspn(name, "\n")] = 0;
+                //name[strcspn(name, "\n")] = 0;
                 Playlist *pl = find_playlist_by_name(playlists, name);
                 if (pl == NULL){
                     printf("No playlist exists for this name\n");
@@ -262,6 +296,10 @@ int main() {
                 list_all_albums(lib);
                 printf("Enter album id to delete song from: ");
                 scanf("%d", &aid);
+                if(aid > albumid || aid <= 0){
+                    printf(" *** INVALID ALBUM ID *** \n");
+                    break ;
+                }
                 getchar();
                 Album *alb = find_album_by_id(lib, aid);
                 if (alb == NULL) {
@@ -272,6 +310,10 @@ int main() {
                 printf("Enter song id to delete: ");
                 scanf("%d", &sid);
                 getchar();
+                if(sid > songid || sid <= 0){
+                    printf(" *** INVALID SONG ID ***\n");
+                    break ;
+                }
                 Song *song = find_song_by_id(alb->songlist, sid);
                 if (song == NULL ) {
                     printf("Song not found in album\n");
