@@ -147,7 +147,7 @@ void remove_playlist_by_name(Playlist **head , char *name){
         prev = temp ;
         temp = temp->next ;
     }
-    printf("NOT FOUND\n");
+    printf("PLAYLIST NOT FOUND\n");
 }
 
 // format of playlist.txt playlist name , Song ids 1|2|3|4

@@ -34,21 +34,15 @@ void print_single_song(Song *song){
 
 void print_all_songs(Song *head){
     if (head == NULL) {
-        printf("No songs in library\n");
+        printf("No songs in available\n");
         return;
     }
 
-    /* Print table header */
     printf("\n%-4s  %-30s  %-25s  %s\n", "ID", "Song Name", "Artist", "Duration");
     printf("%-4s  %-30s  %-25s  %s\n", "----", "------------------------------", "-------------------------", "--------");
 
-    /* Print each song in aligned columns */
     while (head != NULL) {
-        printf("%-4d  %-30s  %-25s  %6s\n",
-               head->id,
-               head->name,
-               head->A_name,
-               head->duration);
+        printf("%-4d  %-30s  %-25s  %6s\n",head->id,head->name,head->A_name,head->duration);
         head = head->next;
     }
 }
