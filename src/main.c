@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "library.h"
 #include "album.h"
 #include "song.h"
 #include "playlist.h"
+#include "utils.h"
 
 #define SONGS_FILE "data/songs.txt"
 #define ALBUMS_FILE "data/albums.txt"
@@ -36,9 +38,9 @@ int main() {
     playlists = load_playlists(PLAYLISTS_FILE, lib);
     int option ;
     char name[100];//used to take the inputs of newly added things ;
-    Playlist *temp ;
+    Playlist *temp = NULL;
 
-    logger("Start");
+    logger("START");
     while (1) {
 
         printf("\n-----------------------------------\n");
@@ -54,11 +56,12 @@ int main() {
         printf("7. Add song to playlist\n");
         printf("8. Add album to playlist\n");
         printf("9. Remove song from Album\n");
-        printf("10. Play Songs through playlists\n");
+        printf("10. Open playlist\n");
         printf("11. Remove a Playlist\n");
+        printf("12. View Command history\n");
         //add the feature to delete a playlist
        
-        printf("12. Exit App\n");
+        printf("13. Exit App\n");
         printf("======================\n");
         printf("Enter choice: ");
         scanf("%d", &option);
@@ -344,10 +347,10 @@ int main() {
                 while(1){
                     int c ;
                     play_current_song(pl);
-                    printf("\n1. Play next\n2. Play previous\n3. Play current song again\n4. Exit playlist\nEnter choice: ");
+                    printf("\n1. Play next\n2. Play previous\n3. Play current song again\n4. Delete current Song\n5. Exit playlist\nEnter choice: ");
                     scanf("%d",&c);
                     getchar();
-                    if(c == 4) break ;
+                    if(c == 5) break ;
                     switch(c){
                         case 1:
                             play_next_song(pl);
@@ -357,6 +360,8 @@ int main() {
                             break ;
                         case 3:
                             continue;
+                        case 4:
+                            remove_current_song(pl);
                     }
                 }
                 logger("play_song_through_playlist");
@@ -372,7 +377,11 @@ int main() {
                 getchar();
                 remove_playlist_by_name(&playlists , name);
                 break ;
-            case 12:
+            case 12:{
+                view_commands(LOG_FILE);
+                break ;
+            }
+            case 13:
                 save_library(lib, SONGS_FILE, ALBUMS_FILE);
                 save_playlist(PLAYLISTS_FILE, playlists);
                 free_library(&lib);
@@ -385,7 +394,7 @@ int main() {
                     prev = next ;
                 }
                 printf("----------- THANK YOU FOR USING MY APP -----------\n");
-                logger("save_and_exit\n");
+                logger("SAVE_AND_EXIT\n");
                 return 0 ;
             default:
                 printf("Invalid choice.\n");

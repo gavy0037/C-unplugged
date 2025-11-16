@@ -43,6 +43,13 @@ void add_song_to_playlist(Playlist* playlist , Song *song){//add song to the nex
 }
 
 void remove_current_song(Playlist *pl){
+    if(pl->curr == pl->curr->next){//i.e. there is only one song
+        Playlistnode *temp = pl->curr;
+        pl->curr = NULL ;
+        free(temp);
+        (pl->size)--;
+        return ;
+    }
     if(pl == NULL || pl->curr == NULL) return ;
     Playlistnode *temp = pl->curr->next ;
     pl->curr->prev->next = pl->curr->next ;
@@ -51,7 +58,7 @@ void remove_current_song(Playlist *pl){
     free(pl->curr);
     pl->curr = temp ;
 
-    pl->size--;
+    (pl->size)--;
 }
 
 void play_current_song(Playlist *pl){
@@ -59,7 +66,7 @@ void play_current_song(Playlist *pl){
         printf("---PLAYLIST IS EMPTY---\n");
     }else{
         Song *song = pl->curr->song ;
-        printf("\n ** PLAYING ** - ID: %d Name: %s | Artist's Name: %s | Duration: [%s] \n",
+        printf("\nPLAYING  ID: %d Name: %s | Artist's Name: %s | Duration: [ %s ] \n",
             song->id , song->name , song->A_name , song->duration);
     }
 }

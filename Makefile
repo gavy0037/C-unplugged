@@ -1,6 +1,6 @@
 # Compiler 
 CC = gcc
-CFLAGS = -Wall -Wextra -I./include
+CFLAGS = -Wall -Wextra -I./include -g
 
 SRC_DIR = src
 BUILD_DIR = build

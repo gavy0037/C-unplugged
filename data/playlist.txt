@@ -1,5 +1,10 @@
-Morning_Drive,1|8|7|2
-Workout_Mix,3|9|7|4
-Chill_Vibes,5|10|6
-Favorites,1|10|9|5
-Gavy_hollow,6|10|7
+Legends_Only,1|4|3|2
+AP_Dhillon_Session,5|7|6
+Karan_Aujla_Mode,8|10|9
+Diljit_Da_Vibe,11|15|14|13|12
+Punjabi_Party,5|1|13|11|9|8|6
+Gym_Motivation,1|7|10|9|6|3
+Road_Trip,2|15|14|11|8|7|5
+Wedding_Special,11|9|15|13|12
+Chill_Vibes,14|12|8|5
+All_Stars_Mix,1|15|14|4|13|10|7|3|12|9|6|2|11|8|5

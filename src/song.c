@@ -80,7 +80,7 @@ Song* load_songs(char *filename){//file is like id,name,artis,duration
     head = NULL ;
     char getter[256];
     while(fgets(getter , sizeof(getter),file) != NULL){
-        getter[strcspn(getter , "\n")] = '\0';
+        getter[strcspn(getter , "\r\n")] = '\0';
 
         char *token = strtok(getter , ",");
         if(token == NULL) continue ;

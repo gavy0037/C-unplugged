@@ -19,12 +19,15 @@ the linked lists are loaded back to their respective .txt files.
 
 I have also added free functions to free all the dynamically stored memory after the run .
 
+The command history is retained across runs and there is a option to view it as well
+
 Features available:
 1.View songs , albums and playlists .
 2.Create a albums and playlists .
 3.Add songs to new playlists and albums (after creation as well as while creating) and existing albums and playlist .
 4.Delete playlists and albums .
 6.Play a playlist with features of playing next , previous and current song again .
+7.View the command history(START implies start of a run and SAVE_AND_EXIT emplies end of session)
 
 *MakeFile*:
 Make : complies the code
