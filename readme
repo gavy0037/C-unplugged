@@ -1,22 +1,23 @@
 *INSTRUCTIONS: The names of all the albums and playlist created must not contain spaces .*
 
 I have maintained .txt files for songs , albums and playlists , So all three are presistent between diffrent runs .
-There is not feature to modift the songs.txt files . If you want to do so then please do manually .
+There is not feature to modify the songs.txt files . If you want to do so then please do manually .
 
 *Implementaion* :
 
-Each song and album has it unique integer ID that is used to search. The ids are maintained in variables so there is no need to enter a ID for creating albums .
-Whenever user has to do some operations on albums or playlists the user is shown the complete library of current albums and playlist and asked to give the ID of the one that they want to modify .
+Each song and album has it unique integer ID that is used to search. The ids are maintained in integer variables so there is no need to enter a ID for creating albums .
+Whenever user has modify albums or playlists the user is shown the complete library of current albums , songs and playlist and asked to give the ID of the one that they want to modify .
 
 At the start of program I load all the songs , albums and playlists into linked lists and i have created a library struct that holds the linked lists 
 for songs and albums .
+Every album and playlist has its own linked list of songs.
+
 For playlists i have used circular doubly linked list to transverse both sides .
 
-Every album and playlist has its linked list of songs.
-Any operation that is performed in the runtime is done in the linked lists and After the run all the linked list data (i.e after the changes that the user has made)
+Any operation that is performed in the runtime is done in the linked lists and After the run , all the linked list data (i.e after the changes that the user has made)
 the linked lists are loaded back to their respective .txt files.
 
-I have added free functions also that free all the dynamically stored memory after the run .
+I have also added free functions to free all the dynamically stored memory after the run .
 
 Features available:
 1.View songs , albums and playlists .
@@ -54,4 +55,5 @@ C-Unplugged/
 │   ├── playlists.txt            
 │   └── commands.log               
 └── Makefile
+
 
